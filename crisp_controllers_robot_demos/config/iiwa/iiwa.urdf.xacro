@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- Kuka iiwa 7DoF manipulator -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="iiwa">
+
+    <!-- Enable setting arguments from the launch file -->
+    <xacro:arg name="use_sim" default="false" />
+    <xacro:arg name="use_fake_hardware" default="true" />
+    <xacro:arg name="prefix" default="" />
+    <xacro:arg name="robot_ip" default="192.170.10.2" />
+    <xacro:arg name="robot_port" default="30200" />
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+    <xacro:arg name="command_interface" default="position" />
+    <xacro:arg name="base_frame_file" default="base_frame.yaml" />
+    <xacro:arg name="description_package" default="iiwa_description" />
+    <xacro:arg name="runtime_config_package" default="iiwa_description" />
+    <xacro:arg name="controllers_file" default="iiwa_controllers.yaml" />
+    <xacro:arg name="namespace" default="/" />
+
+    <xacro:property name="description_package" value="$(arg description_package)"/>
+
+    <!-- Import iiwa urdf file -->
+    <xacro:include filename="$(find ${description_package})/urdf/iiwa.urdf.xacro" />
+
+    <!-- Mujoco hardware interface -->
+    <xacro:include filename="$(find crisp_controllers_robot_demos)/config/iiwa/iiwa.ros2_control.urdf.xacro" />
+
+    <!-- Used for fixing robot -->
+    <link name="world"/>
+
+    <xacro:property name="base_frame_file" value="$(arg base_frame_file)"/>
+    <xacro:property name="base_frame" value="${xacro.load_yaml(base_frame_file)['base_frame']}"/>
+    <xacro:iiwa parent="world" prefix="$(arg prefix)">
+        <origin xyz="${base_frame['x']} ${base_frame['y']} ${base_frame['z']}"
+            rpy="${base_frame['roll']} ${base_frame['pitch']} ${base_frame['yaw']}" />
+    </xacro:iiwa>
+
+
+</robot>

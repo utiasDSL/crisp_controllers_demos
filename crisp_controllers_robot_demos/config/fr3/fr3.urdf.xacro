@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fr3_mujoco">
+
+  <xacro:include filename="$(find franka_description)/robots/common/franka_robot.xacro"/>
+  <xacro:include filename="$(find crisp_controllers_robot_demos)/config/fr3/fr3.ros2_control.urdf.xacro"/>
+
+  <xacro:macro name="fr3"
+         params="arm_id
+             robot_ip
+             use_fake_hardware
+             arm_prefix:=''
+             hand:=true
+             ee_id:='franka_hand'
+             with_sc:=false
+             gazebo:=false
+             gazebo_effort:=true
+             fake_sensor_commands:=false
+             no_prefix:=false
+             "
+    >
+  <xacro:property name="arm_prefix_modified" value="${'' if arm_prefix == '' else arm_prefix + '_'}" />
+  <xacro:franka_robot arm_id="${arm_id}"
+                      joint_limits="${xacro.load_yaml('$(find franka_description)/robots/fr3/joint_limits.yaml')}"
+                      inertials="${xacro.load_yaml('$(find franka_description)/robots/fr3/inertials.yaml')}"
+                      kinematics="${xacro.load_yaml('$(find franka_description)/robots/fr3/kinematics.yaml')}"
+                      dynamics="${xacro.load_yaml('$(find franka_description)/robots/fr3/dynamics.yaml')}"
+                      gazebo="${gazebo}"
+                      hand="${hand}"
+                      ee_id="${ee_id}"
+                      with_sc="${with_sc}"
+                      ros2_control="false"
+                      robot_ip="${robot_ip}"
+                      use_fake_hardware="${use_fake_hardware}"
+                      fake_sensor_commands="${fake_sensor_commands}"
+                      gazebo_effort="${gazebo_effort}"
+                      no_prefix="${no_prefix}"
+                      arm_prefix="${arm_prefix}"
+                      connected_to="${arm_prefix_modified}base">
+  </xacro:franka_robot>
+
+  <!-- We use our own ros2 control definition -->
+  <xacro:franka_arm_ros2_control arm_id="fr3"
+            robot_ip="${robot_ip}"
+            use_fake_hardware="$(arg use_fake_hardware)"
+            arm_prefix="${arm_prefix}"/>
+
+
+  </xacro:macro>
+
+</robot>

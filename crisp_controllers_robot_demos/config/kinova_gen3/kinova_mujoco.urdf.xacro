@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kinova_mujoco">
+
+  <xacro:include filename="$(find kortex_description)/robots/kinova.urdf.xacro"/>
+
+  <xacro:include filename="$(find crisp_controllers_robot_demos)/config/kinova_gen3/kinova.ros2_control.urdf.xacro"/>
+
+</robot>

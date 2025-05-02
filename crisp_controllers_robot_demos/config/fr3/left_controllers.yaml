@@ -1,0 +1,129 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 1000  # Hz
+
+      joint_trajectory_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+
+      pose_broadcaster:
+        type: crisp_controllers/PoseBroadcaster
+
+      gravity_compensation:
+        type: crisp_controllers/CartesianImpedanceController
+
+      cartesian_impedance_controller:
+        type: crisp_controllers/CartesianImpedanceController
+
+  joint_trajectory_controller:
+    ros__parameters:
+      command_interfaces:
+        - effort
+      state_interfaces:
+        - position
+        - velocity
+      joints:
+        - left_fr3_joint1
+        - left_fr3_joint2
+        - left_fr3_joint3
+        - left_fr3_joint4
+        - left_fr3_joint5
+        - left_fr3_joint6
+        - left_fr3_joint7
+      gains:
+        fr3_joint1: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint2: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint3: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint4: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint5: { p: 250., d: 10., i: 0., i_clamp: 1. }
+        fr3_joint6: { p: 150., d: 10., i: 0., i_clamp: 1. }
+        fr3_joint7: { p: 50., d: 5., i: 0., i_clamp: 1. }
+
+  joint_state_broadcaster:
+    ros__parameters:
+      use_local_topics: False
+
+  pose_broadcaster:
+    ros__parameters:
+      joints:
+        - left_fr3_joint1
+        - left_fr3_joint2
+        - left_fr3_joint3
+        - left_fr3_joint4
+        - left_fr3_joint5
+        - left_fr3_joint6
+        - left_fr3_joint7
+
+      end_effector_frame: left_fr3_hand_tcp
+      base_frame: left_base
+
+  gravity_compensation:
+    ros__parameters:
+      joints:
+        - left_fr3_joint1
+        - left_fr3_joint2
+        - left_fr3_joint3
+        - left_fr3_joint4
+        - left_fr3_joint5
+        - left_fr3_joint6
+        - left_fr3_joint7
+
+      end_effector_frame: left_fr3_hand_tcp
+      base_frame: left_base
+
+      task:
+        k_pos_x: 0.0
+        k_pos_y: 0.0
+        k_pos_z: 0.0
+        k_rot_x: 30.0
+        k_rot_y: 30.0
+        k_rot_z: 30.0
+
+      nullspace: 
+        stiffness: 0.0
+
+      use_friction: true
+      use_coriolis_compensation: true
+      use_local_jacobian: true
+
+  cartesian_impedance_controller:
+    ros__parameters:
+      joints:
+        - left_fr3_joint1
+        - left_fr3_joint2
+        - left_fr3_joint3
+        - left_fr3_joint4
+        - left_fr3_joint5
+        - left_fr3_joint6
+        - left_fr3_joint7
+
+      end_effector_frame: left_fr3_hand_tcp
+      base_frame: left_base
+
+      filter:
+        q: 0.5
+        dq: 0.5
+        output_torque: 0.5
+
+      task:
+        k_pos_x: 400.0
+        k_pos_y: 400.0
+        k_pos_z: 400.0
+        k_rot_x: 30.0
+        k_rot_y: 30.0
+        k_rot_z: 30.0
+
+      nullspace: 
+        stiffness: 2.0
+
+      # log:
+      #   enabled: true
+      #   timing: true
+
+      use_friction: false
+      use_coriolis_compensation: true
+      use_local_jacobian: true
+

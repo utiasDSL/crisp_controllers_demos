@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fr3">
+
+  <!-- Include the robot macro -->
+  <xacro:include filename="$(find crisp_controllers_robot_demos)/config/fr3/fr3.urdf.xacro"/>
+
+  <!-- Don't print a prefix for joints, visuals, and links? -->
+  <xacro:arg name="no_prefix" default="false"/>
+
+  <!-- Should an end-effector be mounted at the flange?" -->
+  <xacro:arg name="load_gripper" default="true" />
+
+  <!-- Which end-effector would be mounted at the flange?" -->
+  <xacro:arg name="ee_id" default="franka_hand" />
+
+  <!-- Should self-collision be enabled? -->
+  <xacro:arg name="with_sc" default="false" />
+
+  <!-- IP address or hostname of the robot" -->
+  <xacro:arg name="robot_ip" default="172.16.0.2" />
+
+  <!-- Should a fake hardware be used? -->
+  <xacro:arg name="use_fake_hardware" default="false" />
+
+  <!-- Should fake sensors be used? -->
+  <xacro:arg name="fake_sensor_commands" default="false" />
+
+  <!-- Should the robot be spawned in Gazebo?" -->
+  <xacro:arg name="gazebo" default="false" />
+
+  <!-- Should the robot be spawned in Gazebo with effort interfaces?" -->
+  <xacro:arg name="gazebo_effort" default="true" />
+
+  <!-- Prefix for the arm -->
+  <xacro:arg name="arm_prefix" default="" />
+
+  <xacro:arg name="has_camera" default="false" />
+
+<xacro:property name="arm_prefix_modified" value="${'' if xacro.arg('arm_prefix') == '' else xacro.arg('arm_prefix') + '_'}" />
+
+  <!-- Use the macro to create a single arm -->
+  <xacro:fr3
+    arm_id="fr3"
+    robot_ip="$(arg robot_ip)"
+    use_fake_hardware="$(arg use_fake_hardware)"
+    arm_prefix="$(arg arm_prefix)"
+    hand="$(arg load_gripper)"
+  />
+
+</robot>
+

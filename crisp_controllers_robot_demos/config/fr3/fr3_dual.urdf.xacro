@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dual_fr3">
+
+  <xacro:include filename="$(find crisp_controllers_robot_demos)/config/fr3/fr3.urdf.xacro"/>
+
+  <!-- Should an end-effector be mounted at the flange?" -->
+  <xacro:arg name="hand" default="true" />
+
+  <!-- Which end-effector would be mounted at the flange?" -->
+  <xacro:arg name="ee_id" default="franka_hand" />
+
+  <!-- Should a fake hardware be used? -->
+  <xacro:arg name="use_fake_hardware" default="true" />
+
+  <!-- Should fake sensors be used? -->
+  <xacro:arg name="fake_sensor_commands" default="false" />
+
+  <xacro:arg name="robot_ip_left" default="172.16.1.2" />
+  <xacro:arg name="robot_ip_right" default="172.16.0.2" />
+
+  <xacro:fr3
+    arm_id="fr3"
+    robot_ip="$(arg robot_ip_left)"
+    use_fake_hardware="$(arg use_fake_hardware)"
+    hand="$(arg hand)"
+    arm_prefix="left"
+  />
+
+  <xacro:fr3
+    arm_id="fr3"
+    robot_ip="$(arg robot_ip_right)"
+    use_fake_hardware="$(arg use_fake_hardware)"
+    hand="$(arg hand)"
+    arm_prefix="right"
+  />
+
+
+  <link name="world"/>
+  <!-- Define the transform between both arms -->
+  <joint name="left_base_to_world_joint" type="fixed"> <parent link="world"/>
+    <child link="left_base"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <joint name="right_base_to_world_joint" type="fixed"> <parent link="world"/>
+    <child link="right_base"/>
+    <origin rpy="0 0 0" xyz="0 1.0 0"/>
+  </joint>
+
+</robot>

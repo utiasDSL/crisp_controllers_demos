@@ -1,0 +1,97 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 1000  # Hz
+
+      joint_trajectory_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+
+      pose_broadcaster:
+        type: crisp_controllers/PoseBroadcaster
+
+      cartesian_impedance_controller:
+        type: crisp_controllers/CartesianImpedanceController
+
+  joint_trajectory_controller:
+    ros__parameters:
+      command_interfaces:
+        - effort
+      state_interfaces:
+        - position
+        - velocity
+      joints:
+        - joint_a1
+        - joint_a2
+        - joint_a3
+        - joint_a4
+        - joint_a5
+        - joint_a6
+        - joint_a7
+      gains:
+        fr3_joint1: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint2: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint3: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint4: { p: 600., d: 30., i: 0., i_clamp: 1. }
+        fr3_joint5: { p: 250., d: 10., i: 0., i_clamp: 1. }
+        fr3_joint6: { p: 150., d: 10., i: 0., i_clamp: 1. }
+        fr3_joint7: { p: 50., d: 5., i: 0., i_clamp: 1. }
+
+  joint_state_broadcaster:
+    ros__parameters:
+      use_local_topics: False
+
+  pose_broadcaster:
+    ros__parameters:
+      joints:
+        - joint_a1
+        - joint_a2
+        - joint_a3
+        - joint_a4
+        - joint_a5
+        - joint_a6
+        - joint_a7
+
+      end_effector_frame: tool0
+      base_frame: iiwa_base
+
+  cartesian_impedance_controller:
+    ros__parameters:
+      joints:
+        - joint_a1
+        - joint_a2
+        - joint_a3
+        - joint_a4
+        - joint_a5
+        - joint_a6
+        - joint_a7
+
+      end_effector_frame: tool0
+      base_frame: iiwa_base
+
+      filter:
+        q: 0.5
+        dq: 0.5
+        output_torque: 0.5
+
+      task:
+        k_pos_x: 1000.0
+        k_pos_y: 1000.0
+        k_pos_z: 1000.0
+        k_rot_x: 50.0
+        k_rot_y: 50.0
+        k_rot_z: 50.0
+
+      nullspace: 
+        stiffness: 1.0
+
+      # log:
+      #   enabled: true
+      #   timing: true
+
+      use_friction: false
+      use_coriolis_compensation: true
+      use_local_jacobian: true
+

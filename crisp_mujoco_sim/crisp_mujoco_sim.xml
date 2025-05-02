@@ -1,0 +1,9 @@
+<library path="crisp_mujoco_sim">
+  <class name="crisp_mujoco_sim/Simulator"
+         type="crisp_mujoco_sim::Simulator"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Mujoco system interface 
+      </description>
+  </class>
+</library>

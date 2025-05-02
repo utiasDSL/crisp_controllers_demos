@@ -1,0 +1,21 @@
+{
+    "name": "CRISP Controllers Demos",
+    "privileged": true,
+    "remoteUser": "ros",
+    "dockerComposeFile": "../docker-compose.yaml",
+    "workspaceFolder": "/home/ros/ros2_ws/src/crisp_controllers_demos",
+    "service": "devcontainer",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        },
+        "ghcr.io/larsnieuwenhuizen/features/zellij:0": {
+            "version": "0.0.4"
+        }
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/home/ros/ros2_ws/src/crisp_controllers_demos,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.env,target=/home/ros/.env,type=bind,consistency=cached"
+    ],
+    "postStartCommand": "/bin/bash /home/ros/ros2_ws/src/crisp_controllers_demos/.devcontainer/post_create.sh"
+}
