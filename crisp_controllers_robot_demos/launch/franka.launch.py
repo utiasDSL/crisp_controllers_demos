@@ -23,7 +23,7 @@ from launch.actions import (
     OpaqueFunction,
     Shutdown,
 )
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -40,7 +40,7 @@ def robot_description_dependent_nodes_spawner(
     fake_sensor_commands,
     load_gripper,
     arm_prefix,
-    start_robot_state_publisher
+    start_robot_state_publisher,
 ):
     robot_ip_str = context.perform_substitution(robot_ip)
     arm_id_str = context.perform_substitution(arm_id)
@@ -78,7 +78,9 @@ def robot_description_dependent_nodes_spawner(
             FindPackageShare("crisp_controllers_robot_demos"),
             "config",
             "fr3",
-            f"{arm_prefix_str}_controllers.yaml" if arm_id_str != "" else "controllers.yaml",
+            f"{arm_prefix_str}_controllers.yaml"
+            if arm_prefix_str != ""
+            else "controllers.yaml",
         ]
     )
 
