@@ -78,9 +78,7 @@ def robot_description_dependent_nodes_spawner(
             FindPackageShare("crisp_controllers_robot_demos"),
             "config",
             "fr3",
-            f"{arm_prefix_str}_controllers.yaml"
-            if arm_prefix_str != ""
-            else "controllers.yaml",
+            f"{arm_prefix_str}_controllers.yaml" if arm_prefix_str != "" else "controllers.yaml"
         ]
     )
 
@@ -216,6 +214,12 @@ def generate_launch_description():
                 package="controller_manager",
                 executable="spawner",
                 arguments=["cartesian_impedance_controller", "--inactive"],
+                output="screen",
+            ),
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["joint_trajectory_controller"],
                 output="screen",
             ),
             Node(
