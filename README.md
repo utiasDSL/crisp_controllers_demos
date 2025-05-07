@@ -58,6 +58,9 @@ docker compose up launch_kinova
 ### Rviz does not open when launch the robots. Why?
 > Simply run `xhost +` on a terminal to enable any host to use the X. You need this because we are running the demos in a container.
 
+### When executing `ros2 topic list` in a different terminal, I can not see any topics. However, the container is running. Why?
+> Probably you are using a different `ROS_DOMAIN_ID`. The default now is set to 100 but you can change it when running the container. To change it in your shell run `ROS_DOMAIN_ID=100 && ros2 daemon start && ros2 daemon stop`.
+
 ### How are the manipulors being simulated?
 > We implemeted a simple `MujocoHardwareInterface` to simulate the robots. This code is heavily inspired by the simulator in <a href="https://github.com/fzi-forschungszentrum-informatik/cartesian_controllers/tree/ros2/cartesian_controller_simulation">cartesian_controllers</a>, but probably better alternatives to use mujoco as a backend simulation would be <a href="https://github.com/moveit/mujoco_ros2_control">mujoco_ros2_control</a>. One could also use gazebo. 
 > The mujoco files come from the mujoco menagerie and have been slightly modified to use torque based actuators + we added some friction to the joints (to increase realism).
