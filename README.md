@@ -14,11 +14,9 @@ Some other manipulators that couldd be added to this list is the ![Open Manipula
 | Robots | Franka Robotics FR3 | FR Dual FR3 | IIWA 14 | Kinova Gen3 |
 | :--- | :---: | :---: | :---: | :---: |
 | MuJoCo simulated Hardware | ✅ | ✅ | ✅ | ✅ |
-| Real Hardware | ✅ | ✅ | ❔[^1]  | ❌[^2] |
+| Real Hardware | ✅ | ✅ | ❔[^1]  | ❔[^1] |
 
 [^1]: Untested, but effort interface available.
-
-[^2]: Might require modifications see https://github.com/Kinovarobotics/ros2_kortex/issues/202
 
 ## Getting started
 
