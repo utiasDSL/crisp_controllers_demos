@@ -2,7 +2,7 @@
     "name": "CRISP Controllers Demos",
     "privileged": true,
     "remoteUser": "ros",
-    "dockerComposeFile": "../docker-compose.yaml",
+    "dockerComposeFile": "./docker-compose.yaml",
     "workspaceFolder": "/home/ros/ros2_ws/src/crisp_controllers_demos",
     "service": "devcontainer",
     "features": {

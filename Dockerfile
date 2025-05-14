@@ -80,9 +80,14 @@ WORKDIR /home/ros/ros2_ws
 WORKDIR /home/ros/ros2_ws
 
 # NOTE: it would be better to do separate builds for each repo but for testing this is enough
+# NOTE: There are still some bugs in the latest versions, for now using this commit
 # === FRANKA ROS2 ===
-RUN git clone https://github.com/frankaemika/franka_ros2.git src/franka_ros2 \
+RUN git clone https://github.com/frankaemika/franka_ros2.git src/franka_ros2 --depth 100 \
+    && cd src/franka_ros2 \
+    && git checkout 39df9c11804ec6db7bb6d80972ce0c68a6918296 \
+    && cd /home/ros/ros2_ws \
     && source /opt/ros/humble/setup.bash \
+    && sudo apt-get update \
     && vcs import src < src/franka_ros2/franka.repos --recursive --skip-existing \
     && rosdep update \
     && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \

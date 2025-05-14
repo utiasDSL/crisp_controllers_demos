@@ -197,7 +197,7 @@ def generate_launch_description():
                     {
                         "source_list": [
                             "franka/joint_states",
-                            "franka_gripper/joint_states",
+                            "fr3_gripper/joint_states",
                         ],
                         "rate": 30,
                     }

@@ -1,0 +1,42 @@
+services:
+  devcontainer:
+    image: crisp_controllers_demos:base
+    build:
+      context: ..
+      args:
+        ROS_DISTRO: humble
+      target: base
+    container_name: crisp_controllers_demos_devcontainer
+
+    # === Tune this to your application ===
+    network_mode: "host"
+    ipc: "host"
+    pid: "host"
+    privileged: true
+    # ===
+
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+    volumes:
+      - $HOME/.Xauthority:/root/.Xauthority 
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw 
+      - /dev:/dev
+      - ../limits.conf:/etc/security/limits.conf
+      - $HOME/.ssh:/home/ros/.ssh
+
+    environment:
+      QT_X11_NO_MITSHM: 1
+      DISPLAY: $DISPLAY
+      ROS_DOMAIN_ID: 100
+      RCUTILS_COLORIZED_OUTPUT: 1
+      SHELL: /bin/bash
+
+    cap_add:
+      - SYS_NICE
+
+    ulimits:
+      rtprio: 99
+      rttime: -1
+      memlock: 8428281856
