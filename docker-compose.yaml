@@ -32,6 +32,7 @@ services:
       ROS_DOMAIN_ID: 100
       RCUTILS_COLORIZED_OUTPUT: 1
       SHELL: /bin/bash
+      FASTDDS_BUILTIN_TRANSPORTS: UDPv4
 
     cap_add:
       - SYS_NICE
