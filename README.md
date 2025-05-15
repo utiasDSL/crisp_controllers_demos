@@ -52,7 +52,7 @@ docker compose up launch_kinova
 > [!WARNING]  
 > If you work in different machines (using [crisp_py](https://github.com/utiasDSL/crisp_py) or others) you might want to consider using cyclonedds as you ROS middleware.
 > Simply add the following environment variables in front of the docker compose:
-> `RMW_IMPLEMENTATION=rmw_cyclonedds_cpp CYCLONE_URI=file:///home/ros/ros2_ws/src/cyclone_config.xml docker compose ...`
+> `RMW_IMPLEMENTATION=rmw_cyclonedds_cpp CYCLONEDDS_URI=file:///home/ros/ros2_ws/src/cyclone_config.xml docker compose ...`
 
 ## Troubleshooting
 
