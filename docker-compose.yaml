@@ -70,6 +70,15 @@ services:
       source install/setup.bash &&
       ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
 
+  launch_dual_franka_cyclone:
+    extends: overlay
+    container_name: crisp_controllers_demos_dual_franka_cyclone
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && export CYCLONEDDS_URI=file:///home/ros/ros2_ws/src/crisp_controllers_demos/cyclone_config.xml &&
+      ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
+
   launch_kinova:
     extends: overlay
     container_name: crisp_controllers_demos_kinova
