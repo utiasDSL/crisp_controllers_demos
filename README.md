@@ -49,7 +49,10 @@ docker compose up launch_kinova
 
 3. Now you can publish to `/target_joint` or `/target_pose`! Check [crisp_py](https://github.com/utiasDSL/crisp_py) examples to see how to easily use it.
 
-*TODO also provide an example with interactive markers*
+> [!WARNING]  
+> If you work in different machines (using [crisp_py](https://github.com/utiasDSL/crisp_py) or others) you might want to consider using cyclonedds as you ROS middleware.
+> Simply add the following environment variables in front of the docker compose:
+> `RMW_IMPLEMENTATION=rmw_cyclonedds_cpp CYCLONE_URI=file:///home/ros/ros2_ws/src/cyclone_config.xml docker compose ...`
 
 ## Troubleshooting
 
