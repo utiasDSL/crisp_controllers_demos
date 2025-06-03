@@ -27,13 +27,26 @@ RUN groupadd --gid $USER_GID $USERNAME \
   && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
   && mkdir /home/$USERNAME/.config && chown $USER_UID:$USER_GID /home/$USERNAME/.config
 
+# HACK: Temporary issue with keys https://discourse.ros.org/t/ros-signing-key-migration-guide/43937/27 ===
+RUN rm /etc/apt/sources.list.d/ros2-latest.list \
+  && rm /usr/share/keyrings/ros2-latest-archive-keyring.gpg
+
+RUN apt-get update \
+  && apt-get install -y ca-certificates curl
+
+RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}') ;\
+    curl -L -s -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" \
+    && apt-get update \
+    && apt-get install /tmp/ros2-apt-source.deb \
+    && rm -f /tmp/ros2-apt-source.deb
+# ========================================================================================================
+
 # Set up sudo
 RUN apt-get update \
   && apt-get install -y sudo \
   && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   && rm -rf /var/lib/apt/lists/*
-
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -56,7 +69,7 @@ RUN apt-get update && \
     libeigen3-dev \
     ros-$ROS_DISTRO-ros2-control \
     ros-$ROS_DISTRO-ros2-controllers \
-    ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    # ros-$ROS_DISTRO-rmw-zenoh-cpp \
     dpkg
 
 
