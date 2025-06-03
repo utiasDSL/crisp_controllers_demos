@@ -28,6 +28,7 @@ setup(
     entry_points={
         "console_scripts": [
             "target_publisher = crisp_controllers_robot_demos.target_publisher:main",
+            "crisp_py_franka_hand_adapter = crisp_controllers_robot_demos.crisp_py_franka_hand_adapter:main",
         ],
     },
 )
