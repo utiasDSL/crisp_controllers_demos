@@ -28,6 +28,9 @@ cd crisp_controllers_demos
 git clone git@github.com:utiasDSL/crisp_controllers.git crisp_controllers
 ```
 
+> [!WARNING]
+> Avoid using **Docker Desktop**. Just go for the normal Docker CLI.
+
 1. Build and start the provided container.
 ```bash
 docker compose build
