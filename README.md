@@ -23,6 +23,8 @@ Some other manipulators that couldd be added to this list is the ![Open Manipula
 
 0. (TEMPORARY) Clone the crisp controllers to the repo (later it will be part of the Dockerfile)
 ```bash
+git clone git@github.com:utiasDSL/crisp_controllers_demos.git crisp_controllers_demos
+cd crisp_controllers_demos
 git clone git@github.com:utiasDSL/crisp_controllers.git crisp_controllers
 ```
 
