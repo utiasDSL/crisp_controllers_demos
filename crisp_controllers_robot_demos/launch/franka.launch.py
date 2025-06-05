@@ -73,14 +73,14 @@ def robot_description_dependent_nodes_spawner(
         },
     ).toprettyxml(indent="  ")
 
-    franka_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("crisp_controllers_robot_demos"),
-            "config",
-            "fr3",
-            f"{arm_prefix_str}_controllers.yaml" if arm_prefix_str != "" else "controllers.yaml"
-        ]
-    )
+    franka_controllers = PathJoinSubstitution([
+        FindPackageShare("crisp_controllers_robot_demos"),
+        "config",
+        "fr3",
+        f"{arm_prefix_str}_controllers.yaml"
+        if arm_prefix_str != ""
+        else "controllers.yaml",
+    ])
 
     return [
         Node(
@@ -146,120 +146,120 @@ def generate_launch_description():
         ],
     )
 
-    launch_description = LaunchDescription(
-        [
-            DeclareLaunchArgument(
-                robot_ip_parameter_name,
-                description="Hostname or IP address of the robot.",
+    launch_description = LaunchDescription([
+        DeclareLaunchArgument(
+            robot_ip_parameter_name,
+            description="Hostname or IP address of the robot.",
+        ),
+        DeclareLaunchArgument(
+            arm_id_parameter_name,
+            description="ID of the type of arm used. Supported values: fer, fr3, fp3",
+        ),
+        DeclareLaunchArgument(
+            use_rviz_parameter_name,
+            default_value="false",
+            description="Visualize the robot in Rviz",
+        ),
+        DeclareLaunchArgument(
+            use_fake_hardware_parameter_name,
+            default_value="false",
+            description="Use fake hardware",
+        ),
+        DeclareLaunchArgument(
+            fake_sensor_commands_parameter_name,
+            default_value="false",
+            description='Fake sensor commands. Only valid when "{}" is true'.format(
+                use_fake_hardware_parameter_name
             ),
-            DeclareLaunchArgument(
-                arm_id_parameter_name,
-                description="ID of the type of arm used. Supported values: fer, fr3, fp3",
-            ),
-            DeclareLaunchArgument(
-                use_rviz_parameter_name,
-                default_value="false",
-                description="Visualize the robot in Rviz",
-            ),
-            DeclareLaunchArgument(
-                use_fake_hardware_parameter_name,
-                default_value="false",
-                description="Use fake hardware",
-            ),
-            DeclareLaunchArgument(
-                fake_sensor_commands_parameter_name,
-                default_value="false",
-                description='Fake sensor commands. Only valid when "{}" is true'.format(
-                    use_fake_hardware_parameter_name
-                ),
-            ),
-            DeclareLaunchArgument(
-                load_gripper_parameter_name,
-                default_value="true",
-                description="Use Franka Gripper as an end-effector, otherwise, the robot is loaded "
-                "without an end-effector.",
-            ),
-            DeclareLaunchArgument(
-                arm_prefix_parameter_name,
-                default_value="",
-                description="The prefix of the arm.",
-            ),
-            DeclareLaunchArgument(
-                start_robot_state_publisher_name,
-                default_value="true",
-                description="",
-            ),
-            Node(
-                package="joint_state_publisher",
-                executable="joint_state_publisher",
-                name="joint_state_publisher",
-                parameters=[
-                    {
-                        "source_list": [
-                            "franka/joint_states",
-                            "fr3_gripper/joint_states",
-                        ],
-                        "rate": 30,
-                    }
-                ],
-            ),
-            robot_description_dependent_nodes_spawner_opaque_function,
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["joint_state_broadcaster"],
-                output="screen",
-            ),
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["cartesian_impedance_controller", "--inactive"],
-                output="screen",
-            ),
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["joint_trajectory_controller"],
-                output="screen",
-            ),
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["pose_broadcaster"],
-                output="screen",
-            ),
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["gravity_compensation", "--inactive"],
-                output="screen",
-            ),
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [
-                                FindPackageShare("franka_gripper"),
-                                "launch",
-                                "gripper.launch.py",
-                            ]
-                        )
-                    ]
-                ),
-                launch_arguments={
-                    robot_ip_parameter_name: robot_ip,
-                    use_fake_hardware_parameter_name: use_fake_hardware,
-                }.items(),
-                condition=IfCondition(load_gripper),
-            ),
-            Node(
-                package="rviz2",
-                executable="rviz2",
-                name="rviz2",
-                arguments=["--display-config", rviz_file],
-                condition=IfCondition(use_rviz),
-            ),
-        ]
-    )
+        ),
+        DeclareLaunchArgument(
+            load_gripper_parameter_name,
+            default_value="true",
+            description="Use Franka Gripper as an end-effector, otherwise, the robot is loaded "
+            "without an end-effector.",
+        ),
+        DeclareLaunchArgument(
+            arm_prefix_parameter_name,
+            default_value="",
+            description="The prefix of the arm.",
+        ),
+        DeclareLaunchArgument(
+            start_robot_state_publisher_name,
+            default_value="true",
+            description="",
+        ),
+        Node(
+            package="joint_state_publisher",
+            executable="joint_state_publisher",
+            name="joint_state_publisher",
+            parameters=[
+                {
+                    "source_list": [
+                        "franka/joint_states",
+                        "fr3_gripper/joint_states",
+                    ],
+                    "rate": 30,
+                }
+            ],
+        ),
+        robot_description_dependent_nodes_spawner_opaque_function,
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_state_broadcaster"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["cartesian_impedance_controller", "--inactive"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_impedance_controller", "--inactive"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_trajectory_controller"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["pose_broadcaster"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["gravity_compensation", "--inactive"],
+            output="screen",
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare("franka_gripper"),
+                    "launch",
+                    "gripper.launch.py",
+                ])
+            ]),
+            launch_arguments={
+                robot_ip_parameter_name: robot_ip,
+                use_fake_hardware_parameter_name: use_fake_hardware,
+            }.items(),
+            condition=IfCondition(load_gripper),
+        ),
+        Node(
+            package="rviz2",
+            executable="rviz2",
+            name="rviz2",
+            arguments=["--display-config", rviz_file],
+            condition=IfCondition(use_rviz),
+        ),
+    ])
 
     return launch_description

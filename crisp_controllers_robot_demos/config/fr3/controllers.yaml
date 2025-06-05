@@ -18,7 +18,7 @@
       cartesian_impedance_controller:
         type: crisp_controllers/CartesianImpedanceController
 
-      joint_controller:
+      joint_impedance_controller:
         type: crisp_controllers/CartesianImpedanceController
 
   joint_trajectory_controller:
@@ -92,7 +92,7 @@
       use_coriolis_compensation: true
       use_local_jacobian: true
 
-  joint_controller:
+  joint_impedance_controller:
     ros__parameters:
       joints:
         - fr3_joint1
@@ -119,17 +119,17 @@
       nullspace: 
         stiffness: 5.0
         projector_type: none  # So we are directly controlling the joints!
-        damping: 1.0
+        damping: 0.5
         max_tau: 5.0
         regularization: 1.0e-06
         weights:
-          fr3_joint1.value: 15.0
-          fr3_joint2.value: 15.0
-          fr3_joint3.value: 8.0
-          fr3_joint4.value: 8.0
-          fr3_joint5.value: 8.0
-          fr3_joint6.value: 5.0
-          fr3_joint7.value: 5.0
+          fr3_joint1.value: 150.0
+          fr3_joint2.value: 150.0
+          fr3_joint3.value: 150.0
+          fr3_joint4.value: 150.0
+          fr3_joint5.value: 50.0
+          fr3_joint6.value: 30.0
+          fr3_joint7.value: 10.0
 
       use_friction: true
       use_coriolis_compensation: true
