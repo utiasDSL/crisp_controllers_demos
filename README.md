@@ -50,8 +50,8 @@ docker compose up launch_kinova
 3. Now you can publish to `/target_joint` or `/target_pose`! Check [crisp_py](https://github.com/utiasDSL/crisp_py) examples to see how to easily use it.
 
 > [!WARNING]  
-> If you work in different machines (using [crisp_py](https://github.com/utiasDSL/crisp_py) or others) you might want to consider using cyclonedds as you ROS middleware.
-> Simply use the cyclone version: `launch_dual_franka_cyclone`
+> If you work in different machines (using [crisp_py](https://github.com/utiasDSL/crisp_py) or others) you might want to consider using zenoh as you ROS middleware.
+> Simply use the cyclone version: `launch_franka_zenoh` or `launch_dual_franka_zenoh` and setup the ip address of the router of your machine in the setup file.
 
 ## Troubleshooting
 
