@@ -130,3 +130,47 @@ right:
       use_coriolis_compensation: true
       use_local_jacobian: true
 
+  joint_impedance_controller:
+    ros__parameters:
+      joints:
+        - right_fr3_joint1
+        - right_fr3_joint2
+        - right_fr3_joint3
+        - right_fr3_joint4
+        - right_fr3_joint5
+        - right_fr3_joint6
+        - right_fr3_joint7
+
+      end_effector_frame: right_fr3_hand_tcp
+      base_frame: right_base
+
+      task:
+        k_pos_x: 0.0
+        k_pos_y: 0.0
+        k_pos_z: 0.0
+        k_rot_x: 0.0
+        k_rot_y: 0.0
+        k_rot_z: 0.0
+
+      max_delta_tau: 0.5
+
+      nullspace: 
+        stiffness: 5.0
+        projector_type: none  # So we are directly controlling the joints!
+        damping: 0.5
+        max_tau: 5.0
+        regularization: 1.0e-06
+        weights:
+          right_fr3_joint1.value: 150.0
+          right_fr3_joint2.value: 150.0
+          right_fr3_joint3.value: 150.0
+          right_fr3_joint4.value: 150.0
+          right_fr3_joint5.value: 50.0
+          right_fr3_joint6.value: 30.0
+          right_fr3_joint7.value: 10.0
+
+      use_friction: true
+      use_coriolis_compensation: true
+      use_local_jacobian: true
+      limit_error: true
+      limit_torques: true

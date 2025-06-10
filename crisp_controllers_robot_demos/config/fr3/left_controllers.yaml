@@ -141,8 +141,8 @@ left:
         - left_fr3_joint6
         - left_fr3_joint7
 
-      end_effector_frame: fr3_hand_tcp
-      base_frame: base
+      end_effector_frame: left_fr3_hand_tcp
+      base_frame: left_base
 
       task:
         k_pos_x: 0.0
