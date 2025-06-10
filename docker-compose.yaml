@@ -70,13 +70,25 @@ services:
       source install/setup.bash &&
       ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
 
-  launch_dual_franka_cyclone:
+  launch_franka_zenoh:
+    extends: overlay
+    container_name: crisp_controllers_demos_franka
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      source .ros_env.sh &&
+      RUST_LOG=zenoh=info ros2 run rmw_zenoh_cpp rmw_zenohd &
+      ros2 launch crisp_controllers_robot_demos franka.launch.py arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE} robot_ip:=${ROBOT_IP} use_rviz:=True"
+
+
+  launch_dual_franka_zenoh:
     extends: overlay
     container_name: crisp_controllers_demos_dual_franka_cyclone
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && export CYCLONEDDS_URI=file:///home/ros/ros2_ws/src/crisp_controllers_demos/cyclone_config.xml &&
+      source .ros_env.sh &&
+      RUST_LOG=zenoh=info ros2 run rmw_zenoh_cpp rmw_zenohd &
       ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
 
   launch_kinova:

@@ -78,14 +78,12 @@ RUN sudo apt update && sudo apt-get install -y libglfw3-dev wget \
     && tar -xzf mujoco-${MUJOCO_VERSION}-linux-x86_64.tar.gz -C "/home/ros"
 
 WORKDIR /home/ros/ros2_ws
-WORKDIR /home/ros/ros2_ws
 
 # NOTE: it would be better to do separate builds for each repo but for testing this is enough
 # NOTE: There are still some bugs in the latest versions, for now using this commit
 # === FRANKA ROS2 ===
-RUN git clone https://github.com/frankaemika/franka_ros2.git src/franka_ros2 --depth 100 \
+RUN git clone https://github.com/danielsanjosepro/franka_ros2.git src/franka_ros2 \
     && cd src/franka_ros2 \
-    && git checkout 39df9c11804ec6db7bb6d80972ce0c68a6918296 \
     && cd /home/ros/ros2_ws \
     && source /opt/ros/humble/setup.bash \
     && sudo apt-get update \
