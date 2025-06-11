@@ -60,6 +60,11 @@ docker compose up launch_kinova
 
 ## Troubleshooting
 
+### The robot is not moving and it vibrates when I try to command it. Why?
+> Probably, you have multiple nodes publishing to `target_pose`. You might not have killed them properly
+> Running `ros2 node list` will show you if some nodes run in the background and if you see multiple instances of a node you might have this problem.
+> Run `pkill -9 -f ros && ros2 daemon stop` to kill unwanted nodes and try again.
+
 ### Rviz does not open when launch the robots. Why?
 > Simply run `xhost +` on a terminal to enable any host to use the X. You need this because we are running the demos in a container.
 
