@@ -13,7 +13,7 @@ from std_msgs.msg import Float64MultiArray
 
 
 class GripperClient:
-    def __init__(self, node: Node, gripper_namespace: str = "franka_gripper"):
+    def __init__(self, node: Node, gripper_namespace: str = "fr3_gripper"):
         """Initialize the gripper client."""
 
         self._node = node
@@ -38,6 +38,7 @@ class GripperClient:
             self._gripper_state_callback,
             qos_profile_system_default,
         )
+        node.get_logger().info(self._gripper_state_subscriber.topic_name)
         self._width = None
 
     @property

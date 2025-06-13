@@ -72,23 +72,37 @@ services:
 
   launch_franka_zenoh:
     extends: overlay
-    container_name: crisp_controllers_demos_franka
+    container_name: crisp_controllers_demos_franka_zenoh
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      source .ros_env.sh &&
-      RUST_LOG=zenoh=info ros2 run rmw_zenoh_cpp rmw_zenohd &
+      source src/crisp_controllers_demos/.ros_env.sh &&
+      source src/crisp_controllers_demos/scripts/start_router.sh &&
       ros2 launch crisp_controllers_robot_demos franka.launch.py arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE} robot_ip:=${ROBOT_IP} use_rviz:=True"
 
 
   launch_dual_franka_zenoh:
     extends: overlay
-    container_name: crisp_controllers_demos_dual_franka_cyclone
+    container_name: crisp_controllers_demos_dual_franka_zenoh
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      source .ros_env.sh &&
-      RUST_LOG=zenoh=info ros2 run rmw_zenoh_cpp rmw_zenohd &
+      source src/crisp_controllers_demos/.ros_env.sh &&
+      RUST_LOG=zenoh=info source src/crisp_controllers_demos/scripts/start_router.sh &&
+      ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
+
+  launch_dual_franka_cyclone:
+    extends: overlay
+    container_name: crisp_controllers_demos_dual_franka_cyclone
+    command: >
+      bash -c "sudo apt install ros-humble-rmw-cyclonedds-cpp -y &&
+      source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      export ROS_DOMAIN_ID=100 &&
+      export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp &&
+      export CYCLONEDDS_URI=$HOME/ros2_ws/src/crisp_controllers_demos/cyclone_config.xml &&
+      ros2 daemon stop && 
+      ros2 daemon start &&
       ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
 
   launch_kinova:

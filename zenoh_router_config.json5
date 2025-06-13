@@ -44,7 +44,8 @@
       // "<proto>/<address of machine 1:port>"
       // "<proto>/<address of machine 2:port>"
       "tcp/10.157.163.155:7447",
-      "tcp/10.157.163.27:7447"
+      "tcp/10.157.163.27:7447",
+      "tcp/10.157.163.121:7447",
       // "tcp/[::]:7447"
     ],
 

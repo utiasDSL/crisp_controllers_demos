@@ -196,7 +196,7 @@ def generate_launch_description():
                 {
                     "source_list": [
                         "franka/joint_states",
-                        "fr3_gripper/joint_states",
+                        "franka_gripper/joint_states",
                     ],
                     "rate": 30,
                 }
@@ -259,6 +259,12 @@ def generate_launch_description():
             name="rviz2",
             arguments=["--display-config", rviz_file],
             condition=IfCondition(use_rviz),
+        ),
+        Node(
+            package="crisp_controllers_robot_demos",
+            executable="crisp_py_franka_hand_adapter",
+            name="crisp_py_franka_hand_adapter",
+            output="screen",
         ),
     ])
 
