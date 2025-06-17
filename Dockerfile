@@ -56,7 +56,7 @@ RUN apt-get update && \
     libeigen3-dev \
     ros-$ROS_DISTRO-ros2-control \
     ros-$ROS_DISTRO-ros2-controllers \
-    # ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
     ros-$ROS_DISTRO-rmw-zenoh-cpp \
     dpkg
 

@@ -1,4 +1,3 @@
-
 export ROS_DOMAIN_ID=100
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export CYCLONEDDS_URI=$HOME/ros2_ws/src/crisp_controllers_demos/cyclone_config.xml

@@ -13,7 +13,7 @@ from std_msgs.msg import Float64MultiArray
 
 
 class GripperClient:
-    def __init__(self, node: Node, gripper_namespace: str = "fr3_gripper"):
+    def __init__(self, node: Node, gripper_namespace: str = "franka_gripper"):
         """Initialize the gripper client."""
 
         self._node = node
@@ -38,7 +38,7 @@ class GripperClient:
             self._gripper_state_callback,
             qos_profile_system_default,
         )
-        node.get_logger().info(self._gripper_state_subscriber.topic_name)
+        node.get_logger().warn(self._gripper_state_subscriber.topic_name)
         self._width = None
 
     @property
@@ -148,7 +148,7 @@ class CrispPyGripperAdapater(Node):
 
         self.joint_state_freq = 50
 
-        self.gripper_client = GripperClient(self)
+        self.gripper_client = GripperClient(self, gripper_namespace="franka_gripper")
         self.gripper_client.wait_until_ready()
 
         self.gripper_client.open()
