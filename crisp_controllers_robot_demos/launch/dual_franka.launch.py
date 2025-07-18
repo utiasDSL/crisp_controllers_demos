@@ -7,6 +7,8 @@ from launch.actions import (
     DeclareLaunchArgument,
     GroupAction,
     IncludeLaunchDescription,
+    LogInfo,
+    OpaqueFunction,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -15,7 +17,10 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+    return LaunchDescription([OpaqueFunction(function=check_package_and_launch)])
 
+
+def generate_launch_description():
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
     left_robot_ip = LaunchConfiguration("left_robot_ip")
     right_robot_ip = LaunchConfiguration("right_robot_ip")
@@ -50,49 +55,43 @@ def generate_launch_description():
         "fr3",
         "fr3_dual.urdf.xacro",
     )
-    robot_description = xacro.process_file(franka_xacro_filepath).toprettyxml(indent="  ")
+    robot_description = xacro.process_file(franka_xacro_filepath).toprettyxml(
+        indent="  "
+    )
 
     left_ld = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("crisp_controllers_robot_demos"),
-                        "launch",
-                        "franka.launch.py",
-                    ]
-                )
-            ]
-        ),
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare("crisp_controllers_robot_demos"),
+                "launch",
+                "franka.launch.py",
+            ])
+        ]),
         launch_arguments={
             "arm_id": "fr3",
             "arm_prefix": "left",
             "robot_ip": left_robot_ip,
             "use_rviz": "false",
             "use_fake_hardware": use_fake_hardware,
-            "start_robot_state_publisher": "true"
+            "start_robot_state_publisher": "true",
         }.items(),
     )
 
     right_ld = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("crisp_controllers_robot_demos"),
-                        "launch",
-                        "franka.launch.py",
-                    ]
-                )
-            ]
-        ),
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare("crisp_controllers_robot_demos"),
+                "launch",
+                "franka.launch.py",
+            ])
+        ]),
         launch_arguments={
             "arm_id": "fr3",
             "arm_prefix": "right",
             "robot_ip": right_robot_ip,
             "use_rviz": "false",
             "use_fake_hardware": use_fake_hardware,
-            "start_robot_state_publisher": "true"
+            "start_robot_state_publisher": "true",
         }.items(),
     )
 
@@ -141,7 +140,16 @@ def generate_launch_description():
         name="world_to_right_static_tf",
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["0", "1.0", "0", "0", "0", "0", "world", "right_base"],  # x, y, z, roll, pitch, yaw
+        arguments=[
+            "0",
+            "1.0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "world",
+            "right_base",
+        ],  # x, y, z, roll, pitch, yaw
         output="screen",
     )
 
@@ -153,17 +161,15 @@ def generate_launch_description():
         world_to_right_static_tf,
     ]
 
-    return LaunchDescription(
-        [
-            *launch_arguments,
-            GroupAction([
-                PushRosNamespace("left"),
-                left_ld,
-            ]),
-            GroupAction([
-                PushRosNamespace("right"),
-                right_ld,
-            ]),
-            *nodes,
-        ]
-    )
+    return LaunchDescription([
+        *launch_arguments,
+        GroupAction([
+            PushRosNamespace("left"),
+            left_ld,
+        ]),
+        GroupAction([
+            PushRosNamespace("right"),
+            right_ld,
+        ]),
+        *nodes,
+    ])

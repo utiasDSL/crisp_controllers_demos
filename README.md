@@ -26,6 +26,7 @@ Some other manipulators that couldd be added to this list is the ![Open Manipula
 git clone git@github.com:utiasDSL/crisp_controllers_demos.git crisp_controllers_demos
 cd crisp_controllers_demos
 git clone git@github.com:utiasDSL/crisp_controllers.git crisp_controllers
+git clone git@github.com:danielsanjosepro/franka_force_feedback_controllers.git franka_force_feedback_controllers  # In order to use the haptic feedback control with franka
 ```
 
 > [!WARNING]
