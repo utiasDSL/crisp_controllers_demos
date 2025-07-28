@@ -1,4 +1,4 @@
-# CRISP controllers Demos
+# CRISP Controllers Demos
 
 <img src="https://github.com/user-attachments/assets/284983f8-2311-4699-86ab-06fc2ea9d5af" alt="CRISP Controllers Logo" width="160" align="right"/>
 
