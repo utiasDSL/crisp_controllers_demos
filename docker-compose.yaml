@@ -1,3 +1,36 @@
+x-cameras_base: &cameras_base
+  build:
+    context: .
+    dockerfile: Dockerfile.cameras
+  network_mode: "host"
+  ipc: "host"
+  pid: "host"
+  privileged: true
+  command: >
+    bash -c "source /opt/ros/humble/setup.bash &&
+    ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-camera} camera_namespace:=\${CAMERA_NAMESPACE:-camera}"
+  tty: true
+  stdin_open: true
+  volumes:
+    - $HOME/.Xauthority:/root/.Xauthority
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    - /dev:/dev
+  device_cgroup_rules:
+    - 'c 81:* rmw'
+    - 'c 189:* rmw'
+  devices:
+    - "/dev/input:/dev/input"
+  cap_add:
+    - SYS_NICE
+  environment:
+    - QT_X11_NO_MITSHM=1
+    - DISPLAY=$DISPLAY
+    - ROS_DOMAIN_ID=100
+    - RCUTILS_COLORIZED_OUTPUT=1
+    - SHELL=/bin/bash
+    - CAMERA_NAME=camera
+    - CAMERA_NAMESPACE=camera
+
 services:
   base:
     image: crisp_controllers_demos:base
@@ -107,10 +140,56 @@ services:
       source install/setup.bash &&
       ros2 launch crisp_controllers_robot_demos iiwa.launch.py"
 
-  launch_franka_hand_adapter:
-    extends: overlay
-    container_name: crisp_controllers_demos_franka_hand
+  cameras_base:
+    build:
+      context: .
+      dockerfile: Dockerfile.cameras
+    container_name: camera_base
+    network_mode: "host"
+    ipc: "host"
+    pid: "host"
+    privileged: true
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+    volumes:
+      - $HOME/.Xauthority:/root/.Xauthority 
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw 
+      - /dev:/dev
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+      - 'c 189:* rmw'
+    devices:
+      - "/dev/input:/dev/input"
+    environment:
+      QT_X11_NO_MITSHM: 1
+      DISPLAY: $DISPLAY
+      ROS_DOMAIN_ID: 100
+      RCUTILS_COLORIZED_OUTPUT: 1
+      SHELL: /bin/bash
+      NAMESPACE: right
+    cap_add:
+      - SYS_NICE
+
+
+  launch_realsense:
+    <<: *cameras_base
+    container_name: crisp_controllers_demos_realsense
+
+
+  realsense_camera_left:
+    <<: *cameras_base
+    container_name: crisp_controllers_demos_realsense_left
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
-      source install/setup.bash &&
-      ros2 run crisp_controllers_robot_demos crisp_py_franka_hand_adapter"
+      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-left_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-left}"
+
+
+  realsense_camera_right:
+    <<: *cameras_base
+    container_name: crisp_controllers_demos_realsense_right
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-right_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-wrist}"
+
+
