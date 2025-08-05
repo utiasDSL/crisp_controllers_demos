@@ -112,6 +112,7 @@ FROM base AS iiwa
 # === IIWA (lbr_fri_ros2_stack would also be an option) ===
 RUN git clone https://github.com/ICube-Robotics/iiwa_ros2.git src/iiwa_ros2 \
     && source /opt/ros/$ROS_DISTRO/setup.bash \
+    && rosdep update \
     && rosdep install --ignore-src --from-paths . -y -r \
     && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --symlink-install \
     && touch src/iiwa_ros2/COLCON_IGNORE
