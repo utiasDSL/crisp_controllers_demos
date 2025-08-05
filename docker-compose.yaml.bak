@@ -1,0 +1,134 @@
+services:
+  base:
+    image: crisp_controllers_demos:base
+    build:
+      context: .
+      args:
+        ROS_DISTRO: humble
+      target: base
+    container_name: crisp_controllers_demos_base
+
+    # === Tune this to your application ===
+    network_mode: "host"
+    ipc: "host"
+    pid: "host"
+    privileged: true
+    # ===
+
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+    volumes:
+      - $HOME/.Xauthority:/root/.Xauthority 
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw 
+      - /dev:/dev
+      - ./limits.conf:/etc/security/limits.conf
+      - $HOME/.ssh:/home/ros/.ssh
+
+    environment:
+      QT_X11_NO_MITSHM: 1
+      DISPLAY: $DISPLAY
+      ROS_DOMAIN_ID: 100
+      RCUTILS_COLORIZED_OUTPUT: 1
+      SHELL: /bin/bash
+      FASTDDS_BUILTIN_TRANSPORTS: UDPv4
+
+    cap_add:
+      - SYS_NICE
+
+    ulimits:
+      rtprio: 99
+      rttime: -1
+      memlock: 8428281856
+
+  devcontainer:
+    extends: base
+    container_name: crisp_controllers_demos_devcontainer
+
+  overlay:
+    extends: base
+    image: crisp_controllers_demos:overlay
+    build:
+      context: .
+      target: overlay
+    container_name: crisp_controllers_demos_overlay
+
+  launch_franka:
+    extends: overlay
+    container_name: crisp_controllers_demos_franka
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      ros2 launch crisp_controllers_robot_demos franka.launch.py arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE} robot_ip:=${ROBOT_IP} use_rviz:=True"
+
+  launch_dual_franka:
+    extends: overlay
+    container_name: crisp_controllers_demos_dual_franka
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
+
+  launch_franka_zenoh:
+    extends: overlay
+    container_name: crisp_controllers_demos_franka_zenoh
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      source src/crisp_controllers_demos/scripts/set_zenoh_config.sh &&
+      source src/crisp_controllers_demos/scripts/start_router.sh &&
+      ros2 launch crisp_controllers_robot_demos franka.launch.py arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE} robot_ip:=${ROBOT_IP} use_rviz:=True"
+
+  launch_franka_cyclone:
+    extends: overlay
+    container_name: crisp_controllers_demos_franka_cyclone
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      source src/crisp_controllers_demos/scripts/set_cyclone_config.sh &&
+      ros2 launch crisp_controllers_robot_demos franka.launch.py arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE} robot_ip:=${ROBOT_IP} use_rviz:=True"
+
+
+  launch_dual_franka_zenoh:
+    extends: overlay
+    container_name: crisp_controllers_demos_dual_franka_zenoh
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      source src/crisp_controllers_demos/scripts/set_zenoh_config.sh &&
+      RUST_LOG=zenoh=info source src/crisp_controllers_demos/scripts/start_router.sh &&
+      ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
+
+  launch_dual_franka_cyclone:
+    extends: overlay
+    container_name: crisp_controllers_demos_dual_franka_cyclone
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      source src/crisp_controllers_demos/scripts/set_cyclone_config.sh &&
+      ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE} left_robot_ip:=${LEFT_ROBOT_IP} right_robot_ip:=${RIGHT_ROBOT_IP}"
+
+  launch_kinova:
+    extends: overlay
+    container_name: crisp_controllers_demos_kinova
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      ros2 launch crisp_controllers_robot_demos kinova_gen3.launch.py"
+
+  launch_iiwa:
+    extends: overlay
+    container_name: crisp_controllers_demos_iiwa
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      ros2 launch crisp_controllers_robot_demos iiwa.launch.py"
+
+  launch_franka_hand_adapter:
+    extends: overlay
+    container_name: crisp_controllers_demos_franka_hand
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      source install/setup.bash &&
+      ros2 run crisp_controllers_robot_demos crisp_py_franka_hand_adapter"

@@ -80,6 +80,8 @@ RUN sudo apt update && sudo apt-get install -y libglfw3-dev wget \
 
 WORKDIR /home/ros/ros2_ws
 
+FROM base AS franka
+
 # NOTE: it would be better to do separate builds for each repo but for testing this is enough
 # NOTE: There are still some bugs in the latest versions, for now using this commit
 # === FRANKA ROS2 ===
@@ -94,6 +96,7 @@ RUN git clone https://github.com/danielsanjosepro/franka_ros2.git src/franka_ros
     && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release \
     && touch src/franka_ros2/COLCON_IGNORE src/libfranka/COLCON_IGNORE src/franka_description/COLCON_IGNORE
 
+FROM base AS kinova
 
 # === KINOVA ===
 RUN git clone https://github.com/Kinovarobotics/ros2_kortex.git src/ros2_kortex \
@@ -104,6 +107,8 @@ RUN git clone https://github.com/Kinovarobotics/ros2_kortex.git src/ros2_kortex 
     && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release \
     && touch src/ros2_kortex/COLCON_IGNORE
 
+FROM base AS iiwa
+
 # === IIWA (lbr_fri_ros2_stack would also be an option) ===
 RUN git clone https://github.com/ICube-Robotics/iiwa_ros2.git src/iiwa_ros2 \
     && source /opt/ros/$ROS_DISTRO/setup.bash \
@@ -112,21 +117,39 @@ RUN git clone https://github.com/ICube-Robotics/iiwa_ros2.git src/iiwa_ros2 \
     && touch src/iiwa_ros2/COLCON_IGNORE
 
 
-# === MOUNT THE REPO then build and remove ===
 
-FROM base AS overlay
+FROM franka AS franka-overlay
 
 COPY . src/crisp_controllers_demos
-
-RUN source /opt/ros/humble/setup.bash \
-    && source install/setup.bash \
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && source /home/ros/ros2_ws/install/setup.bash \
     && sudo apt update \
     && rosdep update \
     && rosdep install -q --from-paths src --ignore-src -y \ 
-    && colcon build --symlink-install --symlink-install \ 
-        --cmake-args -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    && colcon build --symlink-install \
+        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-# USER root
-# RUN rm -rf src/crisp_controllers_demos  # Remove it to be able to mount it 
-# USER $USERNAME
+
+FROM kinova AS kinova-overlay
+
+COPY . src/crisp_controllers_demos
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && source /home/ros/ros2_ws/install/setup.bash \
+    && sudo apt update \
+    && rosdep update \
+    && rosdep install -q --from-paths src --ignore-src -y \ 
+    && colcon build --symlink-install \
+        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+
+FROM iiwa AS iiwa-overlay
+
+COPY . src/crisp_controllers_demos
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && source /home/ros/ros2_ws/install/setup.bash \
+    && sudo apt update \
+    && rosdep update \
+    && rosdep install -q --from-paths src --ignore-src -y \ 
+    && colcon build --symlink-install \
+        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
