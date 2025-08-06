@@ -128,7 +128,7 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash \
     && rosdep update \
     && rosdep install -q --from-paths src --ignore-src -y \ 
     && colcon build --symlink-install \
-        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --packages-select crisp_controllers crisp_mujoco_sim crisp_controllers_robot_demos franka_force_feedback_controllers
 
 
 FROM kinova AS kinova-overlay
@@ -140,7 +140,7 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash \
     && rosdep update \
     && rosdep install -q --from-paths src --ignore-src -y \ 
     && colcon build --symlink-install \
-        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --packages-select crisp_controllers crisp_mujoco_sim crisp_controllers_robot_demos
 
 
 FROM iiwa AS iiwa-overlay
@@ -152,5 +152,5 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash \
     && rosdep update \
     && rosdep install -q --from-paths src --ignore-src -y \ 
     && colcon build --symlink-install \
-        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --packages-select crisp_controllers crisp_mujoco_sim crisp_controllers_robot_demos
 

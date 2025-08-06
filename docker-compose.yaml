@@ -9,7 +9,7 @@ x-cameras_base: &cameras_base
   command: >
     bash -c "source /opt/ros/humble/setup.bash &&
     source scripts/setup_middleware.sh &&
-    ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-camera} camera_namespace:=\${CAMERA_NAMESPACE:-camera}"
+    ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-camera} camera_namespace:=\${CAMERA_NAMESPACE:-camera} \${SERIAL_NUMBER:+serial:=_\${SERIAL_NUMBER}}"
   tty: true
   stdin_open: true
 
@@ -32,6 +32,7 @@ x-cameras_base: &cameras_base
     - SHELL=/bin/bash
     - CAMERA_NAME=camera
     - CAMERA_NAMESPACE=camera
+    - ROS_NETWORK_INTERFACE=$ROS_NETWORK_INTERFACE
 
 x-cameras_overlay: &cameras_overlay
   <<: *cameras_base
@@ -144,7 +145,8 @@ services:
     command: >
       bash -lc "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      RMW=${RMW} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
+      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
+      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
       ros2 launch crisp_controllers_robot_demos franka.launch.py
       arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE:-false} robot_ip:=${ROBOT_IP:-172.16.0.2} use_rviz:=True"
 
@@ -153,7 +155,8 @@ services:
     command: >
       bash -lc "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      RMW=${RMW} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
+      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
+      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
       ros2 launch crisp_controllers_robot_demos dual_franka.launch.py
       use_fake_hardware:=${FRANKA_FAKE_HARDWARE:-false}
       left_robot_ip:=${LEFT_ROBOT_IP:-172.16.1.2} right_robot_ip:=${RIGHT_ROBOT_IP:-172.16.0.2}"
@@ -163,7 +166,8 @@ services:
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      RMW=${RMW} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
+      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
+      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
       ros2 launch crisp_controllers_robot_demos kinova_gen3.launch.py"
 
   launch_iiwa:
@@ -171,7 +175,8 @@ services:
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       source install/setup.bash &&
-      RMW=${RMW} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
+      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
+      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
       ros2 launch crisp_controllers_robot_demos iiwa.launch.py"
 
   # -- Camera related services: --
@@ -184,14 +189,17 @@ services:
     container_name: crisp_controllers_demos_realsense_left
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
-      RMW=${RMW} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-left_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-left}"
+      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
+      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
+      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-left_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-left} \${SERIAL_NUMBER:+serial:=_\${SERIAL_NUMBER}}"
 
   realsense_camera_right:
     <<: *cameras_overlay
     container_name: crisp_controllers_demos_realsense_right
+    environment:
+      ROS_NETWORK_INTERFACE: ${ROS_NETWORK_INTERFACE:-lo}
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
-      RMW=${RMW} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-right_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-wrist}"
+      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
+      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-right_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-right}"
 
