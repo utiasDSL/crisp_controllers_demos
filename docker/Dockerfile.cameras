@@ -77,3 +77,8 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME
+
+FROM base AS overlay
+
+COPY . src/crisp_controllers_demos
+
