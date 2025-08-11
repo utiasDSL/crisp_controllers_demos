@@ -13,7 +13,7 @@
         type: crisp_controllers/PoseBroadcaster
 
       cartesian_impedance_controller:
-        type: crisp_controllers/CartesianImpedanceController
+        type: crisp_controllers/CartesianController
 
   joint_trajectory_controller:
     ros__parameters:
