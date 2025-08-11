@@ -32,6 +32,7 @@ x-cameras_base: &cameras_base
     - SHELL=/bin/bash
     - CAMERA_NAME=camera
     - CAMERA_NAMESPACE=camera
+    - RMW=fastdds
 
 x-cameras_overlay: &cameras_overlay
   <<: *cameras_base
@@ -75,6 +76,7 @@ x-base: &base
     ROS_DOMAIN_ID: 100
     RCUTILS_COLORIZED_OUTPUT: 1
     SHELL: /bin/bash
+    RMW: fastdds
     FASTDDS_BUILTIN_TRANSPORTS: UDPv4
 
   ulimits:
