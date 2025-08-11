@@ -13,13 +13,13 @@ right:
         type: crisp_controllers/PoseBroadcaster
 
       gravity_compensation:
-        type: crisp_controllers/CartesianImpedanceController
+        type: crisp_controllers/CartesianController
 
       cartesian_impedance_controller:
-        type: crisp_controllers/CartesianImpedanceController
+        type: crisp_controllers/CartesianController
 
       joint_impedance_controller:
-        type: crisp_controllers/CartesianImpedanceController
+        type: crisp_controllers/CartesianController
 
   joint_trajectory_controller:
     ros__parameters:

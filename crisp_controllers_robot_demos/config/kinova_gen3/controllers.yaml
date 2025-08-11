@@ -10,10 +10,10 @@
         type: joint_state_broadcaster/JointStateBroadcaster
 
       gravity_compensation:
-        type: crisp_controllers/CartesianImpedanceController
+        type: crisp_controllers/CartesianController
 
       cartesian_impedance_controller:
-        type: crisp_controllers/CartesianImpedanceController
+        type: crisp_controllers/CartesianController
 
       pose_broadcaster:
         type: crisp_controllers/PoseBroadcaster
