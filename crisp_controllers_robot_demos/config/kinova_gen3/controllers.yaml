@@ -113,12 +113,12 @@
         output_torque: 0.5
 
       task:
-        k_pos_x: 40.0
-        k_pos_y: 40.0
-        k_pos_z: 40.0
-        k_rot_x: 3.0
-        k_rot_y: 3.0
-        k_rot_z: 3.0
+        k_pos_x: 1000.0
+        k_pos_y: 1000.0
+        k_pos_z: 1000.0
+        k_rot_x: 30.0
+        k_rot_y: 30.0
+        k_rot_z: 30.0
 
       nullspace: 
         stiffness: 0.0

@@ -26,7 +26,6 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-
     declared_arguments = []
     # Robot specific arguments
     declared_arguments.append(
@@ -53,7 +52,12 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("crisp_controllers_robot_demos"), "config", "kinova_gen3", "kinova_mujoco.urdf.xacro"]
+                [
+                    FindPackageShare("crisp_controllers_robot_demos"),
+                    "config",
+                    "kinova_gen3",
+                    "kinova_mujoco.urdf.xacro",
+                ]
             ),
             " ",
             "name:=kinova",
@@ -70,24 +74,26 @@ def generate_launch_description():
     )
     robot_description = {"robot_description": robot_description_content}
 
-    kinova_controllers = PathJoinSubstitution([
-        FindPackageShare("crisp_controllers_robot_demos"),
-        "config",
-        "kinova_gen3",
-        "controllers.yaml",
-    ])
+    kinova_controllers = PathJoinSubstitution(
+        [
+            FindPackageShare("crisp_controllers_robot_demos"),
+            "config",
+            "kinova_gen3",
+            "controllers.yaml",
+        ]
+    )
 
     controller_manager = Node(
-            package="controller_manager",
-            executable="ros2_control_node",
-            parameters=[
-                kinova_controllers,
-                robot_description,
-            ],
-            output={
-                "stdout": "screen",
-                "stderr": "screen",
-            },
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[
+            kinova_controllers,
+            robot_description,
+        ],
+        output={
+            "stdout": "screen",
+            "stderr": "screen",
+        },
     )
     controllers = [
         Node(
@@ -100,6 +106,12 @@ def generate_launch_description():
             package="controller_manager",
             executable="spawner",
             arguments=["pose_broadcaster"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_trajectory_controller"],
             output="screen",
         ),
         Node(
@@ -120,7 +132,6 @@ def generate_launch_description():
         output="screen",
         parameters=[robot_description],
     )
-
 
     rviz = Node(
         package="rviz2",
