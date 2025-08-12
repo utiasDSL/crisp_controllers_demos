@@ -54,6 +54,7 @@ RUN apt-get update && \
     cmake \
     libpoco-dev \
     libeigen3-dev \
+    ros-${ROS_DISTRO}-usb-cam \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-image-transport-plugins \
     ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
@@ -76,7 +77,7 @@ RUN apt-get update \
     ros-${ROS_DISTRO}-realsense2-* \
  && rm -rf /var/lib/apt/lists/*
 
-USER $USERNAME
+USER $USERNAME 
 
 FROM base AS overlay
 
