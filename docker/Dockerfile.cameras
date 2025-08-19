@@ -67,7 +67,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 USER $USERNAME
 
-RUN mkdir -p /home/ros/ros2_ws
+RUN mkdir -p /home/ros/ros2_ws/src
+WORKDIR /home/ros/ros2_ws
 
 # === REALSENSE INSTALL ===
 USER root

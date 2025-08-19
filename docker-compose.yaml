@@ -34,10 +34,14 @@ x-cameras-base: &cameras-base
 
 x-usb-cameras-base: &usb-cameras-base
   <<: *cameras-base
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.cameras
+    target: overlay
   command: >
     bash -c "source /opt/ros/humble/setup.bash &&
     RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-    ros2 run usb_cam usb_cam_node_exe --ros-args -r __ns:=/${CAMERA_NAMESPACE:-camera}"
+    ros2 run usb_cam usb_cam_node_exe --ros-args -r __ns:=/${CAMERA_NAMESPACE:-camera} -p pixel_format:='mjpeg2rgb'"
 
 
 x-realsense-cameras-overlay: &realsense-cameras-overlay
@@ -218,5 +222,3 @@ services:
 
   launch_camera:
     <<: *usb-cameras-base
-    container_name: crisp_controllers_demos_usb_cam
-
