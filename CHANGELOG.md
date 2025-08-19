@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/utiasDSL/crisp_controllers_demos/compare/v1.0.1...v1.1.0) (2025-08-19)
+
+
+### Features
+
+* better handling of RMW using environment variables + use any camera docker file ([4fcae2f](https://github.com/utiasDSL/crisp_controllers_demos/commit/4fcae2fa41c7bd3fd699a5e901d01de3b48adc75))
+
 ## [1.0.1](https://github.com/utiasDSL/crisp_controllers_demos/compare/v1.0.0...v1.0.1) (2025-08-11)
 
 
