@@ -54,6 +54,7 @@ RUN apt-get update && \
     cmake \
     libpoco-dev \
     libeigen3-dev \
+    ros-${ROS_DISTRO}-usb-cam \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-image-transport-plugins \
     ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
@@ -66,7 +67,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 USER $USERNAME
 
-RUN mkdir -p /home/ros/ros2_ws
+RUN mkdir -p /home/ros/ros2_ws/src
+WORKDIR /home/ros/ros2_ws
 
 # === REALSENSE INSTALL ===
 USER root
@@ -76,4 +78,9 @@ RUN apt-get update \
     ros-${ROS_DISTRO}-realsense2-* \
  && rm -rf /var/lib/apt/lists/*
 
-USER $USERNAME
+USER $USERNAME 
+
+FROM base AS overlay
+
+COPY . src/crisp_controllers_demos
+

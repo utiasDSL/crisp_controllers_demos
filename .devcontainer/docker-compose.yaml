@@ -2,10 +2,11 @@ services:
   devcontainer:
     image: crisp_controllers_demos:base
     build:
-      context: ..
+      context: ../docker
+      dockerfile: Dockerfile.robots
       args:
         ROS_DISTRO: humble
-      target: base
+      target: kinova
     container_name: crisp_controllers_demos_devcontainer
 
     # === Tune this to your application ===
