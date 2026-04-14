@@ -1,5 +1,5 @@
-ARG ROS_DISTRO=humble
- 
+ARG ROS_DISTRO=jazzy
+
 FROM osrf/ros:${ROS_DISTRO}-desktop AS base
 
 ENV ROS_DISTRO=${ROS_DISTRO}
@@ -15,13 +15,13 @@ SHELL ["/bin/bash", "-c"]
 
 # Delete existing user if it exists
 RUN if getent passwd ${USER_UID}; then \
-    userdel -r $(getent passwd ${USER_UID} | cut -d: -f1); \
-    fi
+  userdel -r $(getent passwd ${USER_UID} | cut -d: -f1); \
+  fi
 
 # Delete existing group if it exists
 RUN if getent group ${USER_GID}; then \
-    groupdel $(getent group ${USER_GID} | cut -d: -f1); \
-    fi
+  groupdel $(getent group ${USER_GID} | cut -d: -f1); \
+  fi
 
 RUN groupadd --gid $USER_GID $USERNAME \
   && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
@@ -36,30 +36,29 @@ RUN apt-get update \
 
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    vim \
-    build-essential \
-    cmake \
-    wget \
-    git \
-    unzip \
-    pip \
-    python3-venv \
-    python3-ament-package \
-    python3-flake8 \
-    python3-rosdep \
-    python3-setuptools \
-    python3-vcstool \
-    python3-colcon-common-extensions \
-    cmake \
-    libpoco-dev \
-    libeigen3-dev \
-    ros-${ROS_DISTRO}-usb-cam \
-    ros-${ROS_DISTRO}-image-transport \
-    ros-${ROS_DISTRO}-image-transport-plugins \
-    ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
-    ros-$ROS_DISTRO-rmw-zenoh-cpp \
-    dpkg
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  vim \
+  build-essential \
+  cmake \
+  wget \
+  git \
+  unzip \
+  pip \
+  python3-venv \
+  python3-flake8 \
+  python3-rosdep \
+  python3-setuptools \
+  python3-vcstool \
+  python3-colcon-common-extensions \
+  cmake \
+  libpoco-dev \
+  libeigen3-dev \
+  ros-${ROS_DISTRO}-usb-cam \
+  ros-${ROS_DISTRO}-image-transport \
+  ros-${ROS_DISTRO}-image-transport-plugins \
+  ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+  ros-$ROS_DISTRO-rmw-zenoh-cpp \
+  dpkg
 
 
 # Symlink python3 to python
@@ -73,10 +72,10 @@ WORKDIR /home/ros/ros2_ws
 # === REALSENSE INSTALL ===
 USER root
 RUN apt-get update \
- && apt-get install -y \
-    ros-${ROS_DISTRO}-librealsense2* \
-    ros-${ROS_DISTRO}-realsense2-* \
- && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y \
+  ros-${ROS_DISTRO}-librealsense2* \
+  ros-${ROS_DISTRO}-realsense2-* \
+  && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME 
 

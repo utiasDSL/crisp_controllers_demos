@@ -1,3 +1,4 @@
+
 x-cameras-base: &cameras-base
   build:
     context: .
@@ -23,14 +24,15 @@ x-cameras-base: &cameras-base
   environment:
     - QT_X11_NO_MITSHM=1
     - DISPLAY=$DISPLAY
-    - ROS_DOMAIN_ID=100
+    - ROS_DOMAIN_ID=101
     - RCUTILS_COLORIZED_OUTPUT=1
     - SHELL=/bin/bash
     - CAMERA_NAME=camera
     - CAMERA_NAMESPACE=camera
     - ROS_NETWORK_INTERFACE=$ROS_NETWORK_INTERFACE
     - SERIAL_NUMBER=$SERIAL_NUMBER
-    - RMW=fastdds
+    - RMW=cyclone #fastdds
+    # - FASTDDS_BUILTIN_TRANSPORTS=UDPv4
 
 x-usb-cameras-base: &usb-cameras-base
   <<: *cameras-base
@@ -39,10 +41,7 @@ x-usb-cameras-base: &usb-cameras-base
     dockerfile: docker/Dockerfile.cameras
     target: overlay
   command: >
-    bash -c "source /opt/ros/humble/setup.bash &&
-    RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-    ros2 run usb_cam usb_cam_node_exe --ros-args -r __ns:=/${CAMERA_NAMESPACE:-camera} -p pixel_format:='mjpeg2rgb'"
-
+    bash -c "source /opt/ros/jazzy/setup.bash && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 run usb_cam usb_cam_node_exe --ros-args -r __ns:=/${CAMERA_NAMESPACE:-camera} -p pixel_format:='mjpeg2rgb'"
 
 x-realsense-cameras-overlay: &realsense-cameras-overlay
   <<: *cameras-base
@@ -50,11 +49,11 @@ x-realsense-cameras-overlay: &realsense-cameras-overlay
     context: .
     dockerfile: docker/Dockerfile.cameras
     target: overlay
+  #  enable_color:=true enable_depth:=false enable_infra1:=false enable_infra2:=false
+  # depth_module.depth_profile:=1280x720x5
+  # depth_module.infra_profile:=424x240x5
   command: >
-    bash -c "source /opt/ros/humble/setup.bash &&
-    RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-    echo 'Using the serial number: ${SERIAL_NUMBER}' &&
-    ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-camera} camera_namespace:=\${CAMERA_NAMESPACE:-camera} ${SERIAL_NUMBER:+serial_no:=_${SERIAL_NUMBER}}"
+    bash -c "source /opt/ros/jazzy/setup.bash && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && echo 'Using the serial number: ${SERIAL_NUMBER}' && ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-camera} camera_namespace:=\${CAMERA_NAMESPACE:-camera} ${SERIAL_NUMBER:+serial_no:=_${SERIAL_NUMBER}} depth_module.color_profile:=848x480x30 depth_module.depth_profile:=848x480x5 enable_infra:=false enable_infra1:=false enable_infra2:=false"
 
 x-base: &base
   image: crisp_controllers_demos:base
@@ -62,7 +61,7 @@ x-base: &base
     context: .
     dockerfile: docker/Dockerfile.robots
     args:
-      ROS_DISTRO: humble
+      ROS_DISTRO: jazzy
     target: base
 
   network_mode: host
@@ -88,7 +87,7 @@ x-base: &base
   environment:
     QT_X11_NO_MITSHM: 1
     DISPLAY: ${DISPLAY}
-    ROS_DOMAIN_ID: 100
+    ROS_DOMAIN_ID: 101
     RCUTILS_COLORIZED_OUTPUT: 1
     SHELL: /bin/bash
     RMW: fastdds
@@ -131,7 +130,6 @@ x-franka-overlay: &franka-overlay
     dockerfile: docker/Dockerfile.robots
     target: franka-overlay
 
-
 services:
   devcontainer:
     <<: *franka
@@ -149,66 +147,41 @@ services:
   launch_zenoh_router:
     <<: *base
     command: >
-      bash -lc "source /opt/ros/humble/setup.bash &&
-      export RMW_IMPLEMENTATION=rmw_zenoh_cpp &&
-      export RUST_LOG=zenoh=info &&
-      ros2 doctor -r | grep rmw_zenoh_cpp &&
-      ros2 daemon stop && ros2 daemon start &&
-      ros2 run rmw_zenoh_cpp rmw_zenohd"
-
+      bash -lc "source /opt/ros/jazzy/setup.bash && export RMW_IMPLEMENTATION=rmw_zenoh_cpp && export RUST_LOG=zenoh=info && ros2 doctor -r | grep rmw_zenoh_cpp && ros2 daemon stop && ros2 daemon start && ros2 run rmw_zenoh_cpp rmw_zenohd"
 
   launch_franka:
     <<: *franka-overlay
     command: >
-      bash -lc "source /opt/ros/humble/setup.bash &&
-      source install/setup.bash &&
-      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
-      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch crisp_controllers_robot_demos franka.launch.py
-      arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE:-false} robot_ip:=${ROBOT_IP:-172.16.0.2} use_rviz:=True"
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash && export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 launch crisp_controllers_robot_demos franka.launch.py arm_id:=fr3 use_fake_hardware:=${FRANKA_FAKE_HARDWARE:-false} robot_ip:=${ROBOT_IP:-172.16.0.2} use_rviz:=True"
 
   launch_dual_franka:
     <<: *franka-overlay
     command: >
-      bash -lc "source /opt/ros/humble/setup.bash &&
-      source install/setup.bash &&
-      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
-      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch crisp_controllers_robot_demos dual_franka.launch.py
-      use_fake_hardware:=${FRANKA_FAKE_HARDWARE:-false}
-      left_robot_ip:=${LEFT_ROBOT_IP:-172.16.1.2} right_robot_ip:=${RIGHT_ROBOT_IP:-172.16.0.2}"
+      bash -lc "source /opt/ros/jazzy/setup.bash && source install/setup.bash && export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 launch crisp_controllers_robot_demos dual_franka.launch.py use_fake_hardware:=${FRANKA_FAKE_HARDWARE:-false} left_robot_ip:=${LEFT_ROBOT_IP:-172.16.1.2} right_robot_ip:=${RIGHT_ROBOT_IP:-172.16.0.2}"
 
   launch_kinova:
     <<: *kinova-overlay
     command: >
-      bash -c "source /opt/ros/humble/setup.bash &&
-      source install/setup.bash &&
-      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
-      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch crisp_controllers_robot_demos kinova_gen3.launch.py"
+      bash -c "source /opt/ros/jazzy/setup.bash && source install/setup.bash && export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 launch crisp_controllers_robot_demos kinova_gen3.launch.py"
 
   launch_iiwa:
     <<: *iiwa-overlay
     command: >
-      bash -c "source /opt/ros/humble/setup.bash &&
-      source install/setup.bash &&
-      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
-      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch crisp_controllers_robot_demos iiwa.launch.py"
+      bash -c "source /opt/ros/jazzy/setup.bash && source install/setup.bash && export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 launch crisp_controllers_robot_demos iiwa.launch.py"
 
   # -- Camera related services: --
   launch_realsense:
     <<: *realsense-cameras-overlay
     container_name: crisp_controllers_demos_realsense
+  launch_realsense2:
+    <<: *realsense-cameras-overlay
+    container_name: crisp_controllers_demos_realsense2
 
   launch_realsense_camera_left:
     <<: *realsense-cameras-overlay
     container_name: crisp_controllers_demos_realsense_left
     command: >
-      bash -c "source /opt/ros/humble/setup.bash &&
-      export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} &&
-      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-left_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-left} ${SERIAL_NUMBER:+serial:=_${SERIAL_NUMBER}}"
+      bash -c "source /opt/ros/jazzy/setup.bash && export ROS_NETWORK_INTERFACE=${ROS_NETWORK_INTERFACE:-lo} && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-left_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-left} ${SERIAL_NUMBER:+serial:=_${SERIAL_NUMBER}}"
 
   launch_realsense_camera_right:
     <<: *realsense-cameras-overlay
@@ -216,9 +189,7 @@ services:
     environment:
       ROS_NETWORK_INTERFACE: ${ROS_NETWORK_INTERFACE:-lo}
     command: >
-      bash -c "source /opt/ros/humble/setup.bash &&
-      RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh &&
-      ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-right_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-right}"
+      bash -c "source /opt/ros/jazzy/setup.bash && RMW=${RMW:-} source src/crisp_controllers_demos/scripts/setup_middleware.sh && ros2 launch realsense2_camera rs_launch.py camera_name:=\${CAMERA_NAME:-right_wrist_camera} camera_namespace:=\${CAMERA_NAMESPACE:-right}"
 
   launch_camera:
     <<: *usb-cameras-base

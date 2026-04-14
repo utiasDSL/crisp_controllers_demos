@@ -5,7 +5,7 @@ services:
       context: ../docker
       dockerfile: Dockerfile.robots
       args:
-        ROS_DISTRO: humble
+        ROS_DISTRO: jazzy
       target: kinova
     container_name: crisp_controllers_demos_devcontainer
 
@@ -21,8 +21,8 @@ services:
     stdin_open: true
 
     volumes:
-      - $HOME/.Xauthority:/root/.Xauthority 
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw 
+      - $HOME/.Xauthority:/root/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /dev:/dev
       - ../limits.conf:/etc/security/limits.conf
       - $HOME/.ssh:/home/ros/.ssh
